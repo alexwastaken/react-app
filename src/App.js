@@ -3,9 +3,10 @@ import axios from 'axios'
 
 function App() {
   const [data, setData] = useState('')
-  const [insertEC, setInsertEC] = useState('')
+  const [items, setItems] = useState('')
   
   const getData = (e) => {
+
     e.preventDefault();
 
     var containerObj = {};
@@ -20,8 +21,19 @@ function App() {
     axios.post('https://sip5rqo367.execute-api.us-west-1.amazonaws.com/default/testfunction', {
       input: lambdaInput,
         }).then(response => {
+
           console.log(response)
-          setInsertEC(response['data']['returnInfo'].toString())
+
+          const a = response['data']['returnInfo']
+          const copy = []
+          for (let index = 0; index < a.length; ++index) {
+            copy.push(['\n' + '\n' + 'Trailer ' + (index + 1) + '\n'])
+            const b = a[index]
+            for (let index2 = 0; index2 < b.length; ++index2) {
+              copy.push('\n' + a[index][index2] + ' ')
+            }
+          }
+          setItems(copy)
       })
   }
 
@@ -32,7 +44,7 @@ function App() {
         <textarea type="text" rows="30" cols="150" value={data} required onChange={(e) => setData(e.target.value) }></textarea>
         <button style={{width : "70px", height : "20px"}}>Submit</button> 
       </form>
-      <p>{insertEC}</p>
+      <pre style={{fontSize: 15}}>{items}</pre>
     </div>
   );
 }
